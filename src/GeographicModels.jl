@@ -92,8 +92,8 @@ end
 const MAGNETIC_MODEL_DEFAULT = WMM2020
 
 export MagneticModelKey, MAGNETIC_MODEL_DEFAULT
-export EMM2010, EMM2015, EMM2017, IGRF11, IGRF12, IGRF13, WMM2010, WMM2015, WMM2015v2,
-    WMM2020
+export EMM2010,
+    EMM2015, EMM2017, IGRF11, IGRF12, IGRF13, WMM2010, WMM2015, WMM2015v2, WMM2020
 
 const MAGNETIC_MODELS = Dict{MagneticModelKey,Internal.MagneticModel}()
 
@@ -229,9 +229,14 @@ function centrifugal_potential_and_gradient(x)
     return centrifugal_potential_and_gradient(GRAVITY_MODEL_DEFAULT, x)
 end
 
-export earth_fixed_potential_and_gradient, disturbing_potential_and_gradient,
-    inertial_potential_and_gradient, centrifugal_potential_and_gradient,
-    earth_fixed_gravity, inertial_gravity, centrifugal_acceleration
+export earth_fixed_potential_and_gradient,
+    disturbing_potential_and_gradient,
+    inertial_potential_and_gradient,
+    centrifugal_potential_and_gradient,
+    earth_fixed_gravity,
+    disturbance,
+    inertial_gravity,
+    centrifugal_acceleration
 
 function field(mm::Internal.MagneticModel, time_year, lla::LLA)
     Bx = Ref{Float64}()
