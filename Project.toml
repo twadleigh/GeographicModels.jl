@@ -1,0 +1,14 @@
+name = "GeographicModels"
+uuid = "5798a981-99f4-48f3-ad50-53f746c12793"
+authors = ["Tracy Wadleigh <tracy.wadleigh@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Artifacts = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
+CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
+Geodesy = "0ef565a4-170c-5f04-8de2-149903a85f3d"
+GeographicLibWrapper_jll = "73ec4600-8e52-54a9-acd2-2fa891c2bd91"
+GeographicLib_jll = "a660ed4b-f19b-5b77-bc0d-0bc97335ea30"
+LazyArtifacts = "4af54fe1-eca0-43a8-85a7-787d91b784e3"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+libcxxwrap_julia_jll = "3eaa8342-bff7-56a5-9981-c04077f7cee7"

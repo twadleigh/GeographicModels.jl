@@ -1,0 +1,175 @@
+[egm2008]
+git-tree-sha1 = "00b50868a2a76c23997f67bea4d0ee133bf505a9"
+lazy = true
+
+    [[egm2008.download]]
+    sha256 = "54c1f511892a3d6a1362fb91a8f65efb4bd56e1cf4ff205344e003bd5074ed91"
+    url = "https://sourceforge.net/projects/geographiclib/files/gravity-distrib/egm2008.tar.bz2"
+
+[egm2008-1]
+git-tree-sha1 = "d206f06e2a4c239d959b616787c4ec307156c99f"
+lazy = true
+
+    [[egm2008-1.download]]
+    sha256 = "bdb382d0be7ece9142450eacc24b7b7f0889ee3e0ba4f535b04ec383f94c0fb5"
+    url = "https://sourceforge.net/projects/geographiclib/files/geoids-distrib/egm2008-1.tar.bz2"
+
+[egm2008-2_5]
+git-tree-sha1 = "f0f7aa1218971531699b41995611c6bf74160904"
+lazy = true
+
+    [[egm2008-2_5.download]]
+    sha256 = "d602e13446a4a4a23f39aecfe6a2a0760a1bc6c1b497482c2ebc9f7d513be699"
+    url = "https://sourceforge.net/projects/geographiclib/files/geoids-distrib/egm2008-2_5.tar.bz2"
+
+[egm2008-5]
+git-tree-sha1 = "1f30c960a4b556506d023ddbb90e92e1301d72a1"
+lazy = true
+
+    [[egm2008-5.download]]
+    sha256 = "9a57c14330ac609132d324906822a9da9de265ad9b9087779793eb7080852970"
+    url = "https://sourceforge.net/projects/geographiclib/files/geoids-distrib/egm2008-5.tar.bz2"
+
+[egm84]
+git-tree-sha1 = "5b3ad83a98353a38cc5af575db189be715cbc58c"
+lazy = true
+
+    [[egm84.download]]
+    sha256 = "7ebec3b2aa2e88581470cd776299942c2300d797316b431c7a7da4ac2c31d80e"
+    url = "https://sourceforge.net/projects/geographiclib/files/gravity-distrib/egm84.tar.bz2"
+
+[egm84-15]
+git-tree-sha1 = "8fd9925ac6f028236a865c04f7f8ebdd41a04ba4"
+lazy = true
+
+    [[egm84-15.download]]
+    sha256 = "579e3dad2f33b54f1fed16edb3ed9d4ae8cdad6ea064f7375af30d678eb2e51c"
+    url = "https://sourceforge.net/projects/geographiclib/files/geoids-distrib/egm84-15.tar.bz2"
+
+[egm84-30]
+git-tree-sha1 = "3e6efcff94b75f763143126b1f566393a19e38ad"
+lazy = true
+
+    [[egm84-30.download]]
+    sha256 = "18bc3e2b55c4f9f2f9ba8d14380dc47cc5c0d00dc2363b723d2305f30a91498e"
+    url = "https://sourceforge.net/projects/geographiclib/files/geoids-distrib/egm84-30.tar.bz2"
+
+[egm96]
+git-tree-sha1 = "ff5c37614492a845bce57a1238b0e5e8589ca273"
+lazy = true
+
+    [[egm96.download]]
+    sha256 = "6fea4c6bd56ff8ac53dbdad8d5dd505c855471d0354c4abc5c5fe048bf8350c1"
+    url = "https://sourceforge.net/projects/geographiclib/files/gravity-distrib/egm96.tar.bz2"
+
+[egm96-15]
+git-tree-sha1 = "d2e6085d8a888a9658ac7f70369c3fe151327cc5"
+lazy = true
+
+    [[egm96-15.download]]
+    sha256 = "8b1ebad1ebae0a045502d0edb9cc51553da1d3914f01e07470c11b3bed75048e"
+    url = "https://sourceforge.net/projects/geographiclib/files/geoids-distrib/egm96-15.tar.bz2"
+
+[egm96-5]
+git-tree-sha1 = "8526b6dbb5651c41dbf9148926b4be313e984bb4"
+lazy = true
+
+    [[egm96-5.download]]
+    sha256 = "c46224f8f723dc915d97179f4e1580a98d6c742fe2b82cd8fef0ecaaad13e614"
+    url = "https://sourceforge.net/projects/geographiclib/files/geoids-distrib/egm96-5.tar.bz2"
+
+[emm2010]
+git-tree-sha1 = "037702d98108f254fc36301980f1e01effb79e71"
+lazy = true
+
+    [[emm2010.download]]
+    sha256 = "aa8782fddb505d8dc24e3dd26784712c1b1848227e23cdcb4e4f2d3ed49d9e14"
+    url = "https://sourceforge.net/projects/geographiclib/files/magnetic-distrib/emm2010.tar.bz2"
+
+[emm2015]
+git-tree-sha1 = "e1c13b0aa883c4f5d2d142020cecbd5fa96a57a1"
+lazy = true
+
+    [[emm2015.download]]
+    sha256 = "8e71a9704c5f2714bb65581df68e30f0d84d0ad17286d00efb782e7232334c3f"
+    url = "https://sourceforge.net/projects/geographiclib/files/magnetic-distrib/emm2015.tar.bz2"
+
+[emm2017]
+git-tree-sha1 = "2ccb21b5aa3a99880f5eb43b8b7c00a6ed712036"
+lazy = true
+
+    [[emm2017.download]]
+    sha256 = "13ace8ecaf05bf07c7dda93f4a52e98e14be7147d23213fcbe946de3362954a1"
+    url = "https://sourceforge.net/projects/geographiclib/files/magnetic-distrib/emm2017.tar.bz2"
+
+[grs80]
+git-tree-sha1 = "56e26c7057bd2c3a6e392dc3eb1c4d3b098b8ec2"
+lazy = true
+
+    [[grs80.download]]
+    sha256 = "636c438460c9ccb90332bd6fd7d57dbfa62782ac6b64bd84989d559736579230"
+    url = "https://sourceforge.net/projects/geographiclib/files/gravity-distrib/grs80.tar.bz2"
+
+[igrf11]
+git-tree-sha1 = "992913941df9e6bcf94194448aead1d6fc0ad3e0"
+lazy = true
+
+    [[igrf11.download]]
+    sha256 = "1289557fe660052c8fb42eb62d3307e8efd95a4d05031a1befd92f1f433f6457"
+    url = "https://sourceforge.net/projects/geographiclib/files/magnetic-distrib/igrf11.tar.bz2"
+
+[igrf12]
+git-tree-sha1 = "b0a547998a28a27d1c3565d66e035ea356a8de6e"
+lazy = true
+
+    [[igrf12.download]]
+    sha256 = "fbad03ea24d9aa87e2fbc0179ea7f8a4787f235a2ec360abe42cd312000cba3f"
+    url = "https://sourceforge.net/projects/geographiclib/files/magnetic-distrib/igrf12.tar.bz2"
+
+[igrf13]
+git-tree-sha1 = "261efc77b52ac2c17131b475d01695df9ef2b33f"
+lazy = true
+
+    [[igrf13.download]]
+    sha256 = "74a9467fcdb2f210903221fe9d780ac0eed39dd3c87e4995e537a382cbe4daee"
+    url = "https://sourceforge.net/projects/geographiclib/files/magnetic-distrib/igrf13.tar.bz2"
+
+[wgs84]
+git-tree-sha1 = "ba60e0d02a1573e91e97364cee3606b20a612ef4"
+lazy = true
+
+    [[wgs84.download]]
+    sha256 = "4cf4f7e533261986b25f9e3c929d846044e0fb2b9c35f301df545c335491f2e7"
+    url = "https://sourceforge.net/projects/geographiclib/files/gravity-distrib/wgs84.tar.bz2"
+
+[wmm2010]
+git-tree-sha1 = "100483d02bb8eb02454e4d8479e213b3ee034d71"
+lazy = true
+
+    [[wmm2010.download]]
+    sha256 = "a40aced2d5d36b3183f3efc759820d16a7daab81a33a0b81db0510e8d17dbb5e"
+    url = "https://sourceforge.net/projects/geographiclib/files/magnetic-distrib/wmm2010.tar.bz2"
+
+[wmm2015]
+git-tree-sha1 = "3ce5c7db463b19793a681e17187c4f1e1a7f583c"
+lazy = true
+
+    [[wmm2015.download]]
+    sha256 = "4c3fddb09955bbb556a955d81580af89172d8b630b54b45e1b2fabc194ec474f"
+    url = "https://sourceforge.net/projects/geographiclib/files/magnetic-distrib/wmm2015.tar.bz2"
+
+[wmm2015v2]
+git-tree-sha1 = "352a52347bc49a72310d338c45e31eb8e03c5d0a"
+lazy = true
+
+    [[wmm2015v2.download]]
+    sha256 = "fda5e84ee803644c8695637f66ca2b278657633de6f83573eb988713d643a419"
+    url = "https://sourceforge.net/projects/geographiclib/files/magnetic-distrib/wmm2015v2.tar.bz2"
+
+[wmm2020]
+git-tree-sha1 = "3df441783866f70c91987912f4f931b28e64d292"
+lazy = true
+
+    [[wmm2020.download]]
+    sha256 = "0a33e726b88f9aac390d5a64ba2b4e5aa4533dd98699955bc9f23278df3b5a52"
+    url = "https://sourceforge.net/projects/geographiclib/files/magnetic-distrib/wmm2020.tar.bz2"
