@@ -1,3 +1,8 @@
+#! /usr/bin/env julia
+using Pkg: Pkg
+Pkg.activate(@__DIR__)
+Pkg.instantiate()
+
 using TOML, Downloads, SHA, Tar, CodecBzip2
 
 ROOT_URL = "https://sourceforge.net/projects/geographiclib/files"
@@ -40,10 +45,10 @@ MAGNETIC = (;
 
 # compute dictionary equivalent of Artifacts.toml contents
 artifacts = Dict()
-for typ in [GEOID, GRAVITY, MAGNETIC]
-    url_dir = joinpath(ROOT_URL, typ.directory)
-    for nm in typ.names
-        filename = nm * ".tar.bz2"
+for model_type in [GEOID, GRAVITY, MAGNETIC]
+    url_dir = joinpath(ROOT_URL, model_type.directory)
+    for name in model_type.names
+        filename = name * ".tar.bz2"
         url = joinpath(url_dir, filename)
 
         # download the archive locally
@@ -56,7 +61,7 @@ for typ in [GEOID, GRAVITY, MAGNETIC]
         # compute the git-tree-sha1 of its contents
         git_tree_sha1 = Tar.tree_hash(Bzip2DecompressorStream(open(filepath)))
 
-        artifacts[nm] = Dict(
+        artifacts[name] = Dict(
             "lazy" => true,
             "download" => [Dict("url" => url, "sha256" => sha)],
             "git-tree-sha1" => git_tree_sha1,

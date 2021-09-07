@@ -1,46 +1,17 @@
 module GeographicModels
 
-export GEOID_EGM2008_1
-export GEOID_EGM2008_2_5
-export GEOID_EGM2008_5
-export GEOID_EGM96_5
-export GEOID_EGM96_15
-export GEOID_EGM84_15
-export GEOID_EGM84_30
-export GEOID_DEFAULT
-export GRAVITY_GRS80
-export GRAVITY_WGS84
-export GRAVITY_EGM84
-export GRAVITY_EGM96
-export GRAVITY_EGM2008
-export GRAVITY_DEFAULT
-export MAGNETIC_EMM2010
-export MAGNETIC_EMM2015
-export MAGNETIC_EMM2017
-export MAGNETIC_IGRF11
-export MAGNETIC_IGRF12
-export MAGNETIC_IGRF13
-export MAGNETIC_WMM2010
-export MAGNETIC_WMM2015
-export MAGNETIC_WMM2015v2
-export MAGNETIC_WMM2020
-export MAGNETIC_DEFAULT
-
-export deref!, height, field, field_and_rate
-export gravitational_potential_and_gradient, disturbing_potential_and_gradient
-export inertial_potential_and_gradient, centrifugal_potential_and_gradient
-
+# wraps GeographicLibWrapper_jll
 module Internal
 
 using CxxWrap
 using GeographicLibWrapper_jll
 @wrapmodule(GeographicLibWrapper_jll.libGeographicLibWrapper_path)
 
-const GEOCENTRIC_WGS84 = Ref{ConstCxxRef{Geocentric}}()
+const WGS84 = Ref{ConstCxxRef{Geocentric}}()
 
 function __init__()
     @initcxx
-    GEOCENTRIC_WGS84.x = wgs84_geocentric()
+    WGS84.x = wgs84_geocentric()
     return nothing
 end
 
@@ -49,166 +20,218 @@ end  # module Internal
 using Artifacts
 using Geodesy
 using LazyArtifacts
-using StaticArrays
 
-# allows package "constants" to be instantiated lazily from artifacts
-mutable struct LazyRef{T}
-    id::String
-    val::Union{Nothing,T}
+@enum GeoidKey begin
+    EGM2008_1 = 1
+    EGM2008_2_5 = 2
+    EGM2008_5 = 3
+    EGM96_5 = 4
+    EGM96_15 = 5
+    EGM84_15 = 6
+    EGM84_30 = 7
+end
+const GEOID_DEFAULT = EGM96_5
 
-    function LazyRef{T}(id) where {T}
-        return new{T}(id, nothing)
+export GeoidKey, GEOID_DEFAULT
+export EGM2008_1, EGM2008_2_5, EGM2008_5, EGM96_5, EGM96_15, EGM84_15, EGM84_30
+
+const GEOIDS = Dict{GeoidKey,Internal.Geoid}()
+
+function model(key::GeoidKey)
+    ids = (
+        "egm2008-1",
+        "egm2008-2_5",
+        "egm2008-5",
+        "egm96-5",
+        "egm96-15",
+        "egm84-15",
+        "egm84-30",
+    )
+    return get!(GEOIDS, key) do
+        id = ids[Int(key)]
+        pth = joinpath(Artifacts.@artifact_str(id), "geoids")
+        return Internal.Geoid(id, pth, true, true)
     end
 end
 
-# instantiate(::Type{T}, ::String, ::String) needs to be defined for T
-function deref!(lw::LazyRef{T}) where {T}
-    # if the object has already been instantiated, return it
-    !isnothing(lw.val) && return lw.val
+@enum GravityModelKey begin
+    GRS80 = 1
+    WGS84 = 2
+    EGM84 = 3
+    EGM96 = 4
+    EGM2008 = 5
+end
+const GRAVITY_MODEL_DEFAULT = EGM96
 
-    # otherwise, instantiate it first
-    pth = Artifacts.@artifact_str(lw.id)
-    inst = instantiate(T, lw.id, pth)
-    lw.val = inst
-    return inst
+export GravityModelKey, GRAVITY_MODEL_DEFAULT
+export GRS80, WGS84, EGM84, EGM96, EGM2008
+
+const GRAVITY_MODELS = Dict{GravityModelKey,Internal.GravityModel}()
+
+function model(key::GravityModelKey)
+    ids = ("grs80", "wgs84", "egm84", "egm96", "egm2008")
+    return get!(GRAVITY_MODELS, key) do
+        id = ids[Int(key)]
+        pth = joinpath(Artifacts.@artifact_str(id), "gravity")
+        return Internal.GravityModel(id, pth, -1, -1)
+    end
 end
 
-const Geoid = LazyRef{Internal.Geoid}
-const GEOID_EGM2008_1 = Geoid("egm2008-1")
-const GEOID_EGM2008_2_5 = Geoid("egm2008-2_5")
-const GEOID_EGM2008_5 = Geoid("egm2008-5")
-const GEOID_EGM96_5 = Geoid("egm96-5")
-const GEOID_EGM96_15 = Geoid("egm96-15")
-const GEOID_EGM84_15 = Geoid("egm84-15")
-const GEOID_EGM84_30 = Geoid("egm84-30")
-const GEOID_DEFAULT = GEOID_EGM96_5
-
-function instantiate(::Type{Internal.Geoid}, id::String, pth::String)
-    return Internal.Geoid(id, joinpath(pth, "geoids"), true, true)
+@enum MagneticModelKey begin
+    EMM2010 = 1
+    EMM2015 = 2
+    EMM2017 = 3
+    IGRF11 = 4
+    IGRF12 = 5
+    IGRF13 = 6
+    WMM2010 = 7
+    WMM2015 = 8
+    WMM2015v2 = 9
+    WMM2020 = 10
 end
+const MAGNETIC_MODEL_DEFAULT = WMM2020
 
-const GravityModel = LazyRef{Internal.GravityModel}
-const GRAVITY_GRS80 = GravityModel("grs80")
-const GRAVITY_WGS84 = GravityModel("wgs84")
-const GRAVITY_EGM84 = GravityModel("egm84")
-const GRAVITY_EGM96 = GravityModel("egm96")
-const GRAVITY_EGM2008 = GravityModel("egm2008")
-const GRAVITY_DEFAULT = GRAVITY_EGM96
+export MagneticModelKey, MAGNETIC_MODEL_DEFAULT
+export EMM2010, EMM2015, EMM2017, IGRF11, IGRF12, IGRF13, WMM2010, WMM2015, WMM2015v2,
+    WMM2020
 
-function instantiate(::Type{Internal.GravityModel}, id::String, pth::String)
-    return Internal.GravityModel(id, joinpath(pth, "gravity"), -1, -1)
-end
+const MAGNETIC_MODELS = Dict{MagneticModelKey,Internal.MagneticModel}()
 
-const MagneticModel = LazyRef{Internal.MagneticModel}
-const MAGNETIC_EMM2010 = MagneticModel("emm2010")
-const MAGNETIC_EMM2015 = MagneticModel("emm2015")
-const MAGNETIC_EMM2017 = MagneticModel("emm2017")
-const MAGNETIC_IGRF11 = MagneticModel("igrf11")
-const MAGNETIC_IGRF12 = MagneticModel("igrf12")
-const MAGNETIC_IGRF13 = MagneticModel("igrf13")
-const MAGNETIC_WMM2010 = MagneticModel("wmm2010")
-const MAGNETIC_WMM2015 = MagneticModel("wmm2015")
-const MAGNETIC_WMM2015v2 = MagneticModel("wmm2015v2")
-const MAGNETIC_WMM2020 = MagneticModel("wmm2020")
-const MAGNETIC_DEFAULT = MAGNETIC_WMM2020
-
-function instantiate(::Type{Internal.MagneticModel}, id::String, pth::String)
-    return Internal.MagneticModel(
-        id, joinpath(pth, "magnetic"), Internal.GEOCENTRIC_WGS84.x, -1, -1
+function model(key::MagneticModelKey)
+    ids = (
+        "emm2010",
+        "emm2015",
+        "emm2017",
+        "igrf11",
+        "igrf12",
+        "igrf13",
+        "wmm2010",
+        "wmm2015",
+        "wmm2015v2",
+        "wmm2020",
     )
+    return get!(MAGNETIC_MODELS, key) do
+        id = ids[Int(key)]
+        pth = joinpath(Artifacts.@artifact_str(id), "magnetic")
+        return Internal.MagneticModel(id, pth, Internal.WGS84.x, -1, -1)
+    end
 end
+
+export model
 
 function height(geoid::Internal.Geoid, lat, lon)
     return geoid(lat, lon)
 end
 
-function height(gravity::Internal.GravityModel, lat, lon)
-    return Internal.geoid_height(gravity, lat, lon)
+function height(gm::Internal.GravityModel, lat, lon)
+    return Internal.geoid_height(gm, lat, lon)
 end
 
-height(model::LazyRef, lat, lon) = height(deref!(model), lat, lon)
+height(key::Enum, lat, lon) = height(model(key), lat, lon)
 height(model, lla::LLA) = height(model, lla.lat, lla.lon)
-height(lat, lon) = height(GRAVITY_DEFAULT, lat, lon)
+height(lat, lon) = height(GRAVITY_MODEL_DEFAULT, lat, lon)
 height(lla::LLA) = height(lla.lat, lla.lon)
 
-function gravitational_potential_and_gradient(gravity::Internal.GravityModel, lla::LLA)
+export height
+
+function earth_fixed_potential_and_gradient(gm::Internal.GravityModel, lla::LLA)
     gx = Ref{Float64}()
     gy = Ref{Float64}()
     gz = Ref{Float64}()
-    w = Internal.gravity(gravity, lla.lat, lla.lon, lla.alt, gx, gy, gz)
+    w = Internal.gravity(gm, lla.lat, lla.lon, lla.alt, gx, gy, gz)
     return (w, ENU(gx.x, gy.x, gz.x))
 end
 
-function disturbing_potential_and_gradient(gravity::Internal.GravityModel, lla::LLA)
+function disturbing_potential_and_gradient(gm::Internal.GravityModel, lla::LLA)
     dx = Ref{Float64}()
     dy = Ref{Float64}()
     dz = Ref{Float64}()
-    t = Internal.disturbance(gravity, lla.lat, lla.lon, lla.alt, dx, dy, dz)
+    t = Internal.disturbance(gm, lla.lat, lla.lon, lla.alt, dx, dy, dz)
     return (t, ENU(dx.x, dy.x, dz.x))
 end
 
-function gravitational_potential_and_gradient(gravity::Internal.GravityModel, ecef::ECEF)
+function earth_fixed_potential_and_gradient(gm::Internal.GravityModel, ecef::ECEF)
     gX = Ref{Float64}()
     gY = Ref{Float64}()
     gZ = Ref{Float64}()
-    w = Internal.w(gravity, ecef.x, ecef.y, ecef.z, gX, gY, gZ)
+    w = Internal.w(gm, ecef.x, ecef.y, ecef.z, gX, gY, gZ)
     return (w, ECEF(gX.x, gY.x, gZ.x))
 end
 
-function disturbing_potential_and_gradient(gravity::Internal.GravityModel, ecef::ECEF)
+function disturbing_potential_and_gradient(gm::Internal.GravityModel, ecef::ECEF)
     dX = Ref{Float64}()
     dY = Ref{Float64}()
     dZ = Ref{Float64}()
-    t = Internal.t(gravity, ecef.x, ecef.y, ecef.z, dX, dY, dZ)
+    t = Internal.t(gm, ecef.x, ecef.y, ecef.z, dX, dY, dZ)
     return (t, ECEF(dX.x, dY.x, dZ.x))
 end
 
-function inertial_potential_and_gradient(gravity::Internal.GravityModel, ecef::ECEF)
+function inertial_potential_and_gradient(gm::Internal.GravityModel, ecef::ECEF)
     GX = Ref{Float64}()
     GY = Ref{Float64}()
     GZ = Ref{Float64}()
-    v = Internal.v(gravity, ecef.x, ecef.y, ecef.z, GX, GY, GZ)
+    v = Internal.v(gm, ecef.x, ecef.y, ecef.z, GX, GY, GZ)
     return (v, ECEF(GX.x, GY.x, GZ.x))
 end
 
-function centrifugal_potential_and_gradient(gravity::Internal.GravityModel, ecef::ECEF)
+function centrifugal_potential_and_gradient(gm::Internal.GravityModel, ecef::ECEF)
     fX = Ref{Float64}()
     fY = Ref{Float64}()
-    phi = Internal.phi(gravity, ecef.x, ecef.y, fX, fY)
+    phi = Internal.phi(gm, ecef.x, ecef.y, fX, fY)
     return (phi, ECEF(fX.x, fY.x, 0.0))
 end
 
-function gravitational_potential_and_gradient(model::LazyRef, x)
-    return gravitational_potential_and_gradient(deref!(model), x)
+function earth_fixed_potential_and_gradient(key::Enum, x)
+    return earth_fixed_potential_and_gradient(model(key), x)
 end
 
-function disturbing_potential_and_gradient(model::LazyRef, x)
-    return disturbing_potential_and_gradient(deref!(model), x)
+function disturbing_potential_and_gradient(key::Enum, x)
+    return disturbing_potential_and_gradient(model(key), x)
 end
 
-function inertial_potential_and_gradient(model::LazyRef, x)
-    return inertial_potential_and_gradient(deref!(model), x)
+function inertial_potential_and_gradient(key::Enum, x)
+    return inertial_potential_and_gradient(model(key), x)
 end
 
-function centrifugal_potential_and_gradient(model::LazyRef, x)
-    return centrifugal_potential_and_gradient(deref!(model), x)
+function centrifugal_potential_and_gradient(key::Enum, x)
+    return centrifugal_potential_and_gradient(model(key), x)
 end
 
-function gravitational_potential_and_gradient(x)
-    return gravitational_potential_and_gradient(GRAVITY_DEFAULT, x)
+function earth_fixed_gravity(model, x)
+    return earth_fixed_potential_and_gradient(model, x)[2]
+end
+
+function disturbance(model, x)
+    return disturbing_potential_and_gradient(model, x)[2]
+end
+
+function inertial_gravity(model, x)
+    return inertial_potential_and_gradient(model, x)[2]
+end
+
+function centrifugal_acceleration(model, x)
+    return centrifugal_potential_and_gradient(model, x)[2]
+end
+
+function earth_fixed_potential_and_gradient(x)
+    return earth_fixed_potential_and_gradient(GRAVITY_MODEL_DEFAULT, x)
 end
 
 function disturbing_potential_and_gradient(x)
-    return disturbing_potential_and_gradient(GRAVITY_DEFAULT, x)
+    return disturbing_potential_and_gradient(GRAVITY_MODEL_DEFAULT, x)
 end
 
 function inertial_potential_and_gradient(x)
-    return inertial_potential_and_gradient(GRAVITY_DEFAULT, x)
+    return inertial_potential_and_gradient(GRAVITY_MODEL_DEFAULT, x)
 end
 
 function centrifugal_potential_and_gradient(x)
-    return centrifugal_potential_and_gradient(GRAVITY_DEFAULT, x)
+    return centrifugal_potential_and_gradient(GRAVITY_MODEL_DEFAULT, x)
 end
+
+export earth_fixed_potential_and_gradient, disturbing_potential_and_gradient,
+    inertial_potential_and_gradient, centrifugal_potential_and_gradient,
+    earth_fixed_gravity, inertial_gravity, centrifugal_acceleration
 
 function field(mm::Internal.MagneticModel, time_year, lla::LLA)
     Bx = Ref{Float64}()
@@ -233,7 +256,7 @@ function field(mm::Internal.MagneticModel, time_year, ecef::ECEF)
     BX = Ref{Float64}()
     BY = Ref{Float64}()
     BZ = Ref{Float64}()
-    mm(time_year, ecef.x, ecef.y, ecef.z, BX, BY, BZ)
+    Internal.field_geocentric(mm, time_year, ecef.x, ecef.y, ecef.z, BX, BY, BZ)
     return ECEF(BX.x, BY.x, BZ.x)
 end
 
@@ -244,14 +267,18 @@ function field_and_rate(mm::Internal.MagneticModel, time_year, ecef::ECEF)
     BXt = Ref{Float64}()
     BYt = Ref{Float64}()
     BZt = Ref{Float64}()
-    mm(time_year, ecef.x, ecef.y, ecef.z, BX, BY, BZ, BXt, BYt, BZt)
+    Internal.field_geocentric(
+        mm, time_year, ecef.x, ecef.y, ecef.z, BX, BY, BZ, BXt, BYt, BZt
+    )
     return (ECEF(BX.x, BY.x, BZ.x), ECEF(BXt.x, BYt.x, BZt.x))
 end
 
-field(mm::LazyRef, t, x) = field(deref!(mm), t, x)
-field_and_rate(mm::LazyRef, t, x) = field_and_rate(deref!(mm), t, x)
-field(t, x) = field(MAGNETIC_DEFAULT, t, x)
-field_and_rate(t, x) = field_and_rate(MAGNETIC_DEFAULT, t, x)
+field(key::Enum, t, x) = field(model(key), t, x)
+field_and_rate(key::Enum, t, x) = field_and_rate(model(key), t, x)
+field(t, x) = field(MAGNETIC_MODEL_DEFAULT, t, x)
+field_and_rate(t, x) = field_and_rate(MAGNETIC_MODEL_DEFAULT, t, x)
+
+export field, field_and_rate
 
 function __init__()
     Internal.__init__()
